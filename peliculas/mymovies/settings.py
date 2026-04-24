@@ -24,6 +24,8 @@ env = environ.Env(
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+TMDB_API_KEY = env('API_KEY')
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -62,6 +64,10 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'mymovies.urls'
+
+LOGIN_URL = '/users/login'
+
+
 
 TEMPLATES = [
     {
