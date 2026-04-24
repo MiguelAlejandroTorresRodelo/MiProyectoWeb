@@ -30,9 +30,11 @@
       <div class="flex flex-col sm:flex-row gap-4 mt-10">
         {% if user.is_authenticated %}
           <a class="text-blue-600 text-sm sm:text-base"   
-             hx-get="/movies/movie_review/add/{{movie.id}}" 
-             hx-target="body" hx-swap="beforeend" href="#">Reviews</a> 
+            href="{% url 'add_review' movie.id %}">
+            Reviews
+          </a> 
         {% endif %}
+
         <form method="post" action="{% url 'toggle_like' movie.id %}">
           {% csrf_token %}
           <button type="submit" 
@@ -53,34 +55,42 @@
       <p class="mt-5 text-gray-500 text-base sm:text-lg font-normal">
   {{ movie.overview }}
 </p>
-            <!-- Cast -->
-<h2 class="mt-8 text-lg sm:text-xl font-bold text-gray-900">Reparto</h2>
+        
+<!-- Cast -->
+<h2 class="mt-20 text-gray-400 text-xl sm:text-2xl font-semibold">Reparto</h2>
 <div class="mt-4 flex space-x-4 overflow-x-auto pb-4">
   {% for actor in cast %}
-    <div class="flex-shrink-0 w-32 sm:w-40">
-      {% if actor.profile_path %}
-        <img class="w-full h-48 object-cover rounded-lg"
-             src="https://image.tmdb.org/t/p/w200{{ actor.profile_path }}" 
-             alt="{{ actor.name }}">
-      {% else %}
-        <div class="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500">
-          Sin foto
-        </div>
-      {% endif %}
-      <p class="mt-2 text-sm font-semibold text-gray-400 truncate">{{ actor.name }}</p>
-      <p class="text-xs text-gray-600 truncate">{{ actor.character }}</p>
+  <div class="w-40 h-64 bg-white rounded-lg shadow hover:shadow-lg transition flex flex-col">
+  
+  <!-- Foto del actor -->
+  <a href="{% url 'actor_detail' actor.id %}">
+    <img src="https://image.tmdb.org/t/p/w200{{ actor.profile_path }}" 
+         alt="{{ actor.name }}" 
+         class="w-full h-40 object-cover rounded-t-lg">
+  </a>
+    <div class="p-3">
+      <!-- Nombre del actor con link -->
+      <h3 class="text-sm font-semibold text-gray-900 truncate">
+        <a href="{% url 'actor_detail' actor.id %}" class="hover:underline">
+          {{ actor.name }}
+        </a>
+      </h3>
+      <p class="text-xs text-gray-600">Rol: {{ actor.character }}</p>
     </div>
-  {% empty %}
-    <p class="text-white">No hay reparto disponible.</p>
-  {% endfor %}
+  </div>
+{% endfor %}
 </div>
 
 
+
       <!-- Reviews -->
-      <h2 class="mt-6 text-gray-300 text-base sm:text-lg font-semibold">Reseñas:</h2>
-      <div hx-get="{% url 'movie_reviews' movie.id %}">
+      <h2 class="mt-20 text-gray-400 text-xl sm:text-2xl font-semibold">Reseñas:</h2>
+      <div hx-trigger="reviewAdded from:body" 
+          hx-get="{% url 'movie_reviews' movie.id %}" 
+          hx-target="this">
         {% include "movies/reviews.html" %}
       </div>
+
       
     </div>
   </div>

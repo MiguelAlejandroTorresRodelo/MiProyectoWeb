@@ -5,17 +5,54 @@
 
   <!-- Header con avatar, título y rating -->
   <div class="flex items-start justify-between gap-x-4">
-    <!-- Avatar -->
-    <img src="{% static 'movies/knightley.jpg' %}" alt="avatar" 
-         class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-50">
 
     <!-- Título + reseña -->
     <div class="flex-1">
       <h3 class="text-base sm:text-lg font-semibold text-gray-200">{{review.title}}</h3>
       <p class="mt-1 text-sm sm:text-base text-gray-300">{{review.review}}</p>
       <p class="mt-2 text-xs sm:text-sm text-gray-500">
+        Publicado por: {{review.user.username}}<br>
         Usuario desde: {{review.user.date_joined|date:"M Y"}}
       </p>
+
+      <!-- Botón eliminar reseña -->
+      {% if user.is_authenticated and review.user == user %}
+  <!-- Botón que abre el modal -->
+  <button type="button" 
+          class="mt-2 text-xs text-red-600 hover:underline"
+          onclick="document.getElementById('confirmModal-{{review.id}}').classList.remove('hidden')">
+    Eliminar reseña
+  </button>
+
+  <!-- Modal de confirmación -->
+<div id="confirmModal-{{review.id}}" 
+     class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+  <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm">
+    <p class="text-gray-900 font-semibold mb-4">
+      ¿Seguro que quieres eliminar esta reseña?
+    </p>
+    <div class="flex justify-end gap-4">
+      <!-- Botón cancelar -->
+      <button type="button" 
+              class="px-4 py-2 text-gray-700 hover:underline"
+              onclick="document.getElementById('confirmModal-{{review.id}}').classList.add('hidden')">
+        Cancelar
+      </button>
+      <!-- Botón confirmar -->
+      <form method="post" action="{% url 'delete_review' review.id %}">
+        {% csrf_token %}
+        <button type="submit" 
+                class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-500">
+          Sí, eliminar
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endif %}
+
+
     </div>
 
     <!-- Rating -->
@@ -28,9 +65,6 @@
       {{review.rating}}
     </span>
   </div>
-
-  <!-- Nombre del usuario -->
-  <p class="mt-2 text-sm sm:text-base font-semibold text-gray-900">{{review.user}}</p>
 </article> 
 {% empty %}
 <p class="text-gray-400 text-sm sm:text-base">No hay reseñas todavía</p>

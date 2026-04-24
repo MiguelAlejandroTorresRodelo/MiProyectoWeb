@@ -1,0 +1,34 @@
+{% extends "movies/base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-5 py-1 lg:px-32 lg:pt-12">
+  <h1 class="text-3xl sm:text-4xl font-bold text-gray-100 mb-6">Resultados de búsqueda: "{{ query }}"</h1>
+  
+  <div id="search-results-container" class="-m-1 flex flex-wrap md:-m-2">
+    {% for movie in movies %}
+    <div class="flex w-1/4 flex-wrap pt-3">
+      <div class="w-full p-1 md:p-2">
+        <!-- Imagen que redirige a la película -->
+        <a href="/movies/{{ movie.id }}">
+          <img
+            class="block h-full w-full rounded-lg object-cover object-center hover:opacity-80 transition"
+            src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/{{ movie.poster_path }}" 
+            alt="{{ movie.title }}" />
+        </a>
+      </div>
+      <div class="-m-1 h-10 mt-1 mb-5"> 
+        <!-- Título que redirige a la película -->
+        <a href="/movies/{{ movie.id }}" class="block overflow-hidden text-ellipsis pl-5 text-sky-600 font-bold">
+          {{ movie.title|truncatechars_html:40 }}
+        </a>
+        <span class="block pl-5 text-gray-400 text-sm font-thin">
+          {{ movie.release_date }}
+        </span>
+      </div>
+    </div>
+    {% empty %}
+      <p class="text-gray-500">No se encontraron películas.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

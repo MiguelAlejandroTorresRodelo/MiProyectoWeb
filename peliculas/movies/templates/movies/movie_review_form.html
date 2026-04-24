@@ -1,46 +1,30 @@
-<div id="modal" _="on closeModal or listChanged remove me" 
-     class="fixed inset-0 z-10 flex items-center justify-center px-4 sm:px-6 lg:px-8" 
-     role="dialog" aria-modal="true">
-
-  <!-- Fondo oscuro -->
+<div id="modal" class="fixed inset-0 z-10 flex items-center justify-center px-4 sm:px-6 lg:px-8" role="dialog" aria-modal="true">
   <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-
-  <!-- Contenedor del modal -->
   <div class="relative z-20 w-full max-w-md sm:max-w-2xl lg:max-w-4xl overflow-y-auto">
     <div class="bg-white rounded-lg shadow-2xl px-4 py-6 sm:px-6 md:px-8 lg:px-10">
       
-      <!-- Formulario -->
-      <form hx-post="/movies/movie_review/add/{{movie.id}}/" 
-            hx-target="#modal" hx-swap="outerHTML" 
-            class="w-full">
+      <form method="post" action="{% url 'add_review' movie.id %}" class="w-full">
+        {% csrf_token %}
         
-        <!-- Título -->
-        <p class="mb-4 text-lg sm:text-xl font-bold text-gray-900">
-          Agrega una Reseña
-        </p>
+        <p class="mb-4 text-lg sm:text-xl font-bold text-gray-900">Agrega una Reseña</p>
 
-        <!-- Campos -->
         <div class="grid grid-cols-1 gap-y-6 sm:grid-cols-6 sm:gap-x-6">
           <div class="sm:col-span-4">
-            {{movie_review_form}}
+            {{ movie_review_form }}
             <div class="text-sm font-medium text-red-600">
-              {{ form.description.errors }}
+              {{ movie_review_form.errors }}
             </div>
           </div>
         </div>
 
-        <!-- Botones -->
         <div class="mt-6 flex flex-col sm:flex-row justify-end gap-4">
-          <button type="button"  
-                  _="on click trigger closeModal" 
-                  class="w-full sm:w-auto text-sm sm:text-base font-semibold text-gray-900">
+          <button type="button" class="w-full sm:w-auto text-sm sm:text-base font-semibold text-gray-900"
+                  onclick="window.history.back()">
             Cancelar
           </button>
-          <button type="submit" 
-                  class="w-full sm:w-auto rounded-md bg-indigo-600 px-4 py-2 
-                         text-sm sm:text-base font-semibold text-white shadow-sm 
-                         hover:bg-indigo-500 focus:outline-none focus:ring-2 
-                         focus:ring-offset-2 focus:ring-indigo-600">
+          <button type="submit" class="w-full sm:w-auto rounded-md bg-indigo-600 px-4 py-2 
+                   text-sm sm:text-base font-semibold text-white shadow-sm hover:bg-indigo-500 
+                   focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600">
             Guardar
           </button>
         </div>

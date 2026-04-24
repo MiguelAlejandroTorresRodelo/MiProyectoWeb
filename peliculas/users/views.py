@@ -37,19 +37,22 @@ def register_view(request):
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
 
+        # Validaciones básicas
+        if not username or not password or not confirm_password:
+            messages.error(request, "Todos los campos son obligatorios.")
+            return render(request, "users/register.html")
+
         if password != confirm_password:
             messages.error(request, "Las contraseñas no coinciden.")
-            return redirect("register")
+            return render(request, "users/register.html")
 
         if User.objects.filter(username=username).exists():
-            messages.error(request, "El usuario ya existe.")
-            return redirect("register")
+            messages.error(request, "El nombre de usuario ya existe.")
+            return render(request, "users/register.html")
 
         # Crear usuario
         user = User.objects.create_user(username=username, password=password)
-        login(request, user)
-        return redirect("index")  # redirige al inicio después de registrarse
+        login(request, user)  # lo loguea automáticamente
+        return redirect("/")  # redirige al inicio
 
-    # Si es GET, renderiza el formulario
     return render(request, "users/register.html")
-    

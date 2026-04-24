@@ -1,0 +1,42 @@
+{% extends "movies/base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-5 py-6 lg:px-32">
+
+  <div class="flex gap-x-6">
+    <!-- Foto del actor -->
+    {% if actor.profile_path %}
+      <img src="https://image.tmdb.org/t/p/w300{{ actor.profile_path }}" 
+           alt="{{ actor.name }}" class="rounded-lg shadow">
+    {% endif %}
+
+    <!-- Datos del actor -->
+    <div>
+        <h1 class="text-3xl sm:text-4xl font-bold text-gray-100 mb-6">
+        {{ actor.name }}
+        </h1>
+      <p class="mt-2 text-gray-300">{{ actor.biography }}</p>
+      <p class="mt-2 text-sm text-gray-500">Fecha de nacimiento: {{ actor.birthday }}</p>
+      {% if actor.place_of_birth %}
+        <p class="text-sm text-gray-500">Lugar de nacimiento: {{ actor.place_of_birth }}</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Películas -->
+  <h2 class="mt-8 text-xl font-semibold text-gray-900">Películas</h2>
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 mt-4">
+    {% for movie in movies %}
+      <div class="bg-white rounded-lg shadow hover:shadow-lg transition">
+        <img src="https://image.tmdb.org/t/p/w200{{ movie.poster_path }}" 
+             alt="{{ movie.title }}" class="w-full h-64 object-cover rounded-t-lg">
+        <div class="p-3">
+          <h3 class="text-sm font-semibold text-gray-900 truncate">{{ movie.title }}</h3>
+          <p class="text-xs text-gray-500">{{ movie.release_date }}</p>
+          <p class="text-xs text-gray-600">Rol: {{ movie.character }}</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock content %}
