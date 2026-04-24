@@ -19,26 +19,39 @@ def search_movies(request):
     movies = Movie.objects.filter(title__icontains=query) if query else []
     return render(request, "movies/search_results.html", {"movies": movies, "query": query})
 
-    
 def movie(request, movie_id):
     movie = get_object_or_404(Movie, id=movie_id)
     user_has_liked = False
     if request.user.is_authenticated:
         user_has_liked = MovieLike.objects.filter(user=request.user, movie=movie).exists()
 
-    # Llamada a la API de TMDb para obtener reparto
+    # Llamada a la API de TMDb para obtener detalles completos
+    details = {}
     cast = []
     if movie.tmdb_id:
-        url = f"https://api.themoviedb.org/3/movie/{movie.tmdb_id}/credits?api_key={settings.TMDB_API_KEY}&language=es"
-        response = requests.get(url)
-        if response.status_code == 200:
-            data = response.json()
-            cast = data.get("cast", [])
+        url_details = f"https://api.themoviedb.org/3/movie/{movie.tmdb_id}?api_key={settings.TMDB_API_KEY}&language=es"
+        url_cast = f"https://api.themoviedb.org/3/movie/{movie.tmdb_id}/credits?api_key={settings.TMDB_API_KEY}&language=es"
+        url_videos = f"https://api.themoviedb.org/3/movie/{movie.tmdb_id}/videos?api_key={settings.TMDB_API_KEY}&language=es"
+
+        response_details = requests.get(url_details)
+        response_cast = requests.get(url_cast)
+        response_videos = requests.get(url_videos)
+
+        if response_details.status_code == 200:
+            details = response_details.json()
+        if response_cast.status_code == 200:
+            cast = response_cast.json().get("cast", [])
+        if response_videos.status_code == 200:
+            videos = response_videos.json().get("results", [])
+            trailer = next((v for v in videos if v["type"] == "Trailer" and v["site"] == "YouTube"), None)
+            if trailer:
+                details["trailer_url"] = f"https://www.youtube.com/embed/{trailer['key']}"
 
     return render(request, "movies/movie.html", {
         "movie": movie,
         "user_has_liked": user_has_liked,
         "cast": cast,
+        "details": details,
     })
 
 def movie_reviews(request, movie_id):

@@ -17,7 +17,7 @@
 
     <!-- Info -->
     <div class="lg:col-span-2">
-      <p class="truncate text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-200">
+      <p class="truncate text-xl sm:text-2xl font-bold text-gray-300 dark:text-gray-200">
         {{movie.title}} ({{movie.release_date|date:"Y"}})
       </p>
       <p class="mt-1 text-gray-400 text-xs sm:text-sm font-thin">
@@ -51,10 +51,31 @@
       </div>
 
       <!-- Overview -->
-      <h1 class="mt-20 text-gray-400 text-xl sm:text-2xl font-semibold">Overview</h1>
+      <h1 class="mt-10 text-gray-400 text-xl sm:text-2xl font-semibold">Overview</h1>
       <p class="mt-5 text-gray-500 text-base sm:text-lg font-normal">
-  {{ movie.overview }}
-</p>
+        {{ movie.overview }}
+      </p>
+<h2 class="mt-10 text-gray-400 text-xl sm:text-2xl font-semibold">Ficha técnica</h2>
+<ul class="mt-4 text-gray-600 text-sm space-y-2 pl-5">
+  <li><strong>Fecha de estreno:</strong> {{ details.release_date }}</li>
+  <li><strong>Duración:</strong> {{ details.runtime }} minutos</li>
+  <li><strong>Idioma original:</strong> {{ details.original_language }}</li>
+  <li><strong>Países de producción:</strong> 
+    {% for country in details.production_countries %}
+      {{ country.name }}{% if not forloop.last %}, {% endif %}
+    {% endfor %}
+  </li>
+  <li><strong>Compañías productoras:</strong> 
+    {% for company in details.production_companies %}
+      {{ company.name }}{% if not forloop.last %}, {% endif %}
+    {% endfor %}
+  </li>
+  <li><strong>Popularidad:</strong> {{ details.popularity }}</li>
+  <li><strong>Votos promedio:</strong> {{ details.vote_average }} ({{ details.vote_count }} votos)</li>
+  <li><strong>Presupuesto:</strong> ${{ details.budget|floatformat:0 }}</li>
+  <li><strong>Recaudación:</strong> ${{ details.revenue|floatformat:0 }}</li>
+</ul>
+
         
 <!-- Cast -->
 <h2 class="mt-20 text-gray-400 text-xl sm:text-2xl font-semibold">Reparto</h2>

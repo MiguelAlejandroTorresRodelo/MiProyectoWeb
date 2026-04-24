@@ -1,3 +1,7 @@
+{% extends "movies/base.html" %}
+
+{% block content %}
+
 <div id="modal" class="fixed inset-0 z-10 flex items-center justify-center px-4 sm:px-6 lg:px-8" role="dialog" aria-modal="true">
   <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
   <div class="relative z-20 w-full max-w-md sm:max-w-2xl lg:max-w-4xl overflow-y-auto">
@@ -32,3 +36,4 @@
     </div>
   </div>
 </div>
+{% endblock %}
